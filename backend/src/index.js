@@ -1,0 +1,62 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
+
+import authRoutes from "./routes/auth.js";
+import analysisRoutes from "./routes/analysis.js";
+import simulationRoutes from "./routes/simulation.js";
+import progressRoutes from "./routes/progress.js";
+
+const app = express();
+
+// CORS — restreint au frontend
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error("CORS bloqué : origine non autorisée"));
+  },
+  credentials: true,
+}));
+
+app.use(express.json({ limit: "1mb" }));
+
+// Rate limiting global (100 req / 15 min / IP)
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
+
+// Healthcheck (utile pour Render)
+app.get("/health", (req, res) => res.json({ ok: true, ts: Date.now() }));
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/analysis", analysisRoutes);
+app.use("/api/simulation", simulationRoutes);
+app.use("/api/progress", progressRoutes);
+
+// 404
+app.use((req, res) => res.status(404).json({ error: "Route introuvable" }));
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    error: err.message || "Erreur serveur",
+  });
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`🚀 Talent-Ya API en écoute sur le port ${PORT}`);
+  console.log(`   Env: ${process.env.NODE_ENV || "development"}`);
+});

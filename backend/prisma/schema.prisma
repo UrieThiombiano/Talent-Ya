@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  username      String       @unique
+  passwordHash  String
+  createdAt     DateTime     @default(now())
+
+  analyses      Analysis[]
+  simulations   Simulation[]
+  moduleProgress ModuleProgress[]
+}
+
+model Analysis {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sector       String
+  country      String
+  scoreGlobal  Int
+  verdict      String
+  resultJson   Json     // tous les détails (forces, faiblesses, mots-clés, etc.)
+
+  createdAt    DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model Simulation {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  poste        String
+  sector       String
+  score        Int
+  decision     String   // "retenu", "en_attente", "rejete"
+  feedbackJson Json     // verdict complet
+
+  createdAt    DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model ModuleProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  moduleId   String
+  completedAt DateTime @default(now())
+
+  @@unique([userId, moduleId])
+}

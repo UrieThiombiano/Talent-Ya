@@ -31,7 +31,11 @@ router.post("/run", authRequired, async (req, res, next) => {
     const offerText = offer.trim() || `Offre disponible à l'URL : ${offerUrl}`;
 
     const prompt = `Analyse cette candidature pour le marché africain.
-Pays cible : ${country}
+
+🎯 PAYS CIBLE — STRICT : ${country}
+Tu ancres TOUS tes conseils culturels et exemples sur ${country} UNIQUEMENT.
+Aucune mention d'autres pays africains autorisée (sauf si présents dans le CV ou l'offre).
+
 Secteur : ${sectorName}
 
 === CV ===
@@ -43,11 +47,11 @@ ${letter.trim() ? letter.substring(0, 2000) : "(non fournie)"}
 === OFFRE D'EMPLOI ===
 ${offerText.substring(0, 2500)}
 
-CONTRAINTE ABSOLUE — fidélité au CV :
-- Pour "ameliorations_contenu" et "phrases_a_ajouter" : reformule UNIQUEMENT ce qui est explicitement dans le CV.
-- N'invente PAS chiffres (ex: "+30% visibilité", "15+ tickets"), outils (TypeScript, Express, Jest si absents), méthodologies (sprint planning, code reviews si seul "daily" mentionné).
-- Si tu vois "notions de X" → ne le transforme PAS en expertise. Suggère plutôt au candidat de PRÉCISER ou retirer.
-- Si tu détectes des zones floues, mets-le dans "ameliorations_contenu" comme questionnement, jamais comme invention.
+CONTRAINTES ABSOLUES :
+1. Pour "ameliorations_contenu" et "phrases_a_ajouter" : reformule UNIQUEMENT ce qui est dans le CV. Aucun chiffre inventé. Aucun outil ajouté.
+2. Pour "conseils_culturels" : ancre sur ${country}. AUCUNE mention d'un autre pays africain.
+3. "mots_cles_manquants" : OK pour lister les vrais gaps.
+4. Si zone floue ("notions de X"), suggère que le candidat précise — n'invente pas.
 
 Renvoie STRICTEMENT ce JSON (aucun texte autour) :
 {
@@ -57,18 +61,19 @@ Renvoie STRICTEMENT ce JSON (aucun texte autour) :
   "score_pertinence": <0-100>,
   "score_localisation": <0-100>,
   "verdict": "<une phrase tranchée, 15 mots max>",
-  "forces": ["<3 forces concrètes ancrées dans le CV>"],
+  "forces": ["<3 forces ancrées dans le CV>"],
   "faiblesses": ["<3 faiblesses concrètes>"],
-  "mots_cles_offre": ["<8 mots-clés clés extraits de l'offre>"],
-  "mots_cles_manquants": ["<5 mots-clés présents dans l'offre mais absents du CV>"],
-  "ameliorations_visuelles": ["<3 conseils mise en forme adaptés>"],
-  "ameliorations_contenu": ["<4 réécritures FIDÈLES — avant/après courts, sans invention>"],
-  "conseils_culturels": ["<2 conseils sur les codes du recruteur ${country}/secteur>"],
+  "mots_cles_offre": ["<8 mots-clés de l'offre>"],
+  "mots_cles_manquants": ["<5 manquants>"],
+  "ameliorations_visuelles": ["<3 conseils mise en forme>"],
+  "ameliorations_contenu": ["<4 réécritures FIDÈLES>"],
+  "conseils_culturels": ["<2 conseils ancrés sur ${country}>"],
   "phrases_a_ajouter": ["<2 phrases ancrées DANS le CV réel>"],
-  "lettre_intro_amelioree": "<accroche améliorée 2-3 lignes, fidèle au profil>"
+  "lettre_intro_amelioree": "<accroche améliorée 2-3 lignes>"
 }`;
 
-    const result = await callClaude(prompt, "json", 2000);
+    // Appel avec validation géo activée
+    const result = await callClaude(prompt, "json", 2000, country);
 
     const saved = await prisma.analysis.create({
       data: {

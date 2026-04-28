@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api, setToken } from "./lib/api.js";
 import AuthView from "./views/AuthView.jsx";
 import AnalyseView from "./views/AnalyseView.jsx";
+import CoachingView from "./views/CoachingView.jsx";
 import SimulationView from "./views/SimulationView.jsx";
 import ProgressView from "./views/ProgressView.jsx";
 import TrainingView from "./views/TrainingView.jsx";
@@ -9,11 +10,10 @@ import Header from "./components/Header.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [view, setView] = useState("analyse");
+  const [view, setView] = useState("coaching"); // coaching par défaut, c'est le mode phare
   const [refreshKey, setRefreshKey] = useState(0);
   const [bootstrapping, setBootstrapping] = useState(true);
 
-  // Au démarrage : vérifier si un token est stocké et toujours valide
   useEffect(() => {
     (async () => {
       try {
@@ -47,6 +47,7 @@ export default function App() {
       <Header user={user} onLogout={logout} view={view} setView={setView} />
       <main className="pb-12">
         {view === "analyse" && <AnalyseView onAnalysisDone={() => setRefreshKey(k => k + 1)} />}
+        {view === "coaching" && <CoachingView />}
         {view === "simulation" && <SimulationView />}
         {view === "progres" && <ProgressView refreshKey={refreshKey} />}
         {view === "formation" && <TrainingView />}

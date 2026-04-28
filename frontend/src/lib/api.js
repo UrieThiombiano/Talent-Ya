@@ -53,4 +53,13 @@ export const api = {
   completeModule: (moduleId) => request("/api/progress/module/complete", {
     method: "POST", body: { moduleId },
   }),
+
+  // coaching (nouveau)
+  startCoaching: (data) => request("/api/coaching/start", { method: "POST", body: data }),
+  answerCoaching: (data) => request("/api/coaching/answer", { method: "POST", body: data }),
+  finalizeCoaching: (sessionId) => request("/api/coaching/finalize", {
+    method: "POST", body: { sessionId },
+  }),
+  listCoachingSessions: () => request("/api/coaching/sessions"),
+  getCoachingSession: (id) => request(`/api/coaching/session/${id}`),
 };

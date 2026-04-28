@@ -290,3 +290,6 @@ body {
   background: var(--pukri-orange-100);
   color: var(--pukri-marine-900);
 }
+.page-transition {
+  animation: fadeUp 0.5s ease-out;
+}

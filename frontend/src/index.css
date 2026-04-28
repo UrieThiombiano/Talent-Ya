@@ -2,15 +2,291 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
+/* ============================================================
+   PUKRI AI SYSTEMS — Design Tokens
+   ============================================================ */
+
+:root {
+  /* Marine — confiance, sérieux, carrière */
+  --pukri-marine-50:  #f0f5fa;
+  --pukri-marine-100: #d9e6f2;
+  --pukri-marine-200: #b3cce5;
+  --pukri-marine-400: #4a78a8;
+  --pukri-marine-600: #1e3a5f;
+  --pukri-marine-800: #102a43;
+  --pukri-marine-900: #0a1929;
+
+  /* Orange PUKRI — chaleur, énergie, action */
+  --pukri-orange-50:  #fef6ec;
+  --pukri-orange-100: #fde4c2;
+  --pukri-orange-400: #f59332;
+  --pukri-orange-500: #e67e22;
+  --pukri-orange-600: #c4651b;
+  --pukri-orange-700: #9a4f12;
+
+  /* Cyan — IA, modernité, intelligence */
+  --pukri-cyan-50:  #ecfeff;
+  --pukri-cyan-100: #cffafe;
+  --pukri-cyan-400: #22d3ee;
+  --pukri-cyan-500: #06b6d4;
+  --pukri-cyan-600: #0891b2;
+  --pukri-cyan-700: #0e7490;
+
+  /* Neutres */
+  --pukri-ink: #0a1929;
+  --pukri-graphite: #1e293b;
+  --pukri-stone: #64748b;
+  --pukri-fog: #cbd5e1;
+  --pukri-mist: #e2e8f0;
+  --pukri-cloud: #f1f5f9;
+  --pukri-snow: #f8fafc;
+
+  /* Sémantique réservée — uniquement pour vraies erreurs/succès */
+  --pukri-success: #16a34a;
+  --pukri-success-bg: #dcfce7;
+  --pukri-danger: #dc2626;
+  --pukri-danger-bg: #fee2e2;
+  --pukri-warning: #ca8a04;
+  --pukri-warning-bg: #fef9c3;
+
+  /* Ombres — soft, jamais agressives */
+  --pukri-shadow-sm: 0 1px 2px 0 rgba(10, 25, 41, 0.04);
+  --pukri-shadow:    0 1px 3px 0 rgba(10, 25, 41, 0.06), 0 1px 2px -1px rgba(10, 25, 41, 0.04);
+  --pukri-shadow-md: 0 4px 6px -1px rgba(10, 25, 41, 0.07), 0 2px 4px -2px rgba(10, 25, 41, 0.05);
+  --pukri-shadow-lg: 0 10px 15px -3px rgba(10, 25, 41, 0.08), 0 4px 6px -4px rgba(10, 25, 41, 0.05);
+  --pukri-shadow-xl: 0 20px 25px -5px rgba(10, 25, 41, 0.1), 0 8px 10px -6px rgba(10, 25, 41, 0.05);
+  --pukri-shadow-glow-orange: 0 0 0 4px rgba(245, 147, 50, 0.15);
+  --pukri-shadow-glow-cyan: 0 0 0 4px rgba(6, 182, 212, 0.15);
 }
 
+/* ============================================================
+   Typographie & base
+   ============================================================ */
+
+html, body, #root { height: 100%; }
+
 body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--pukri-snow);
+  color: var(--pukri-ink);
 }
 
 .font-display {
-  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-family: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   Backgrounds atmosphériques — la "respiration" des pages
+   ============================================================ */
+
+.bg-pukri-canvas {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(245, 147, 50, 0.05), transparent 55%),
+    var(--pukri-snow);
+  background-attachment: fixed;
+}
+
+.bg-pukri-deep {
+  background: linear-gradient(135deg, var(--pukri-marine-900) 0%, var(--pukri-marine-800) 50%, var(--pukri-marine-900) 100%);
+}
+
+.bg-pukri-grid {
+  background-image:
+    linear-gradient(rgba(30, 58, 95, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 95, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ============================================================
+   Glassmorphism léger pour cartes premium
+   ============================================================ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(30, 58, 95, 0.08);
+}
+
+.glass-dark {
+  background: rgba(10, 25, 41, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   Animations — légères, jamais agressives
+   ============================================================ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 147, 50, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(245, 147, 50, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
+.animate-fade-up.delay-1 { animation-delay: 0.1s; }
+.animate-fade-up.delay-2 { animation-delay: 0.2s; }
+.animate-fade-up.delay-3 { animation-delay: 0.3s; }
+.animate-fade-up.delay-4 { animation-delay: 0.4s; }
+.animate-fade-up.delay-5 { animation-delay: 0.5s; }
+
+.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+.animate-pulse-soft { animation: pulseSoft 2s ease-in-out infinite; }
+.animate-glow { animation: glowPulse 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* Skeleton loader */
+.skeleton {
+  background: linear-gradient(90deg, var(--pukri-cloud) 0%, var(--pukri-mist) 50%, var(--pukri-cloud) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ============================================================
+   Boutons PUKRI — primaires, secondaires, ghost
+   ============================================================ */
+
+.btn-pukri {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-pukri:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-pukri:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-pukri-orange {
+  background: var(--pukri-orange-400);
+  color: #1a0d00;
+  box-shadow: var(--pukri-shadow-md);
+}
+.btn-pukri-orange:hover:not(:disabled) {
+  background: var(--pukri-orange-500);
+  box-shadow: var(--pukri-shadow-lg), var(--pukri-shadow-glow-orange);
+}
+
+.btn-pukri-marine {
+  background: var(--pukri-marine-800);
+  color: white;
+}
+.btn-pukri-marine:hover:not(:disabled) {
+  background: var(--pukri-marine-900);
+  box-shadow: var(--pukri-shadow-lg);
+}
+
+.btn-pukri-cyan {
+  background: var(--pukri-cyan-500);
+  color: white;
+}
+.btn-pukri-cyan:hover:not(:disabled) {
+  background: var(--pukri-cyan-600);
+  box-shadow: var(--pukri-shadow-md), var(--pukri-shadow-glow-cyan);
+}
+
+.btn-pukri-outline {
+  background: white;
+  color: var(--pukri-marine-800);
+  border: 1px solid var(--pukri-mist);
+}
+.btn-pukri-outline:hover:not(:disabled) {
+  border-color: var(--pukri-marine-200);
+  background: var(--pukri-snow);
+}
+
+.btn-pukri-ghost {
+  background: transparent;
+  color: var(--pukri-stone);
+}
+.btn-pukri-ghost:hover:not(:disabled) {
+  background: var(--pukri-cloud);
+  color: var(--pukri-ink);
+}
+
+/* ============================================================
+   Inputs PUKRI
+   ============================================================ */
+
+.input-pukri {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--pukri-snow);
+  border: 1px solid var(--pukri-mist);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+  color: var(--pukri-ink);
+}
+
+.input-pukri:focus {
+  outline: none;
+  border-color: var(--pukri-cyan-500);
+  background: white;
+  box-shadow: var(--pukri-shadow-glow-cyan);
+}
+
+.input-pukri::placeholder {
+  color: var(--pukri-stone);
+}
+
+/* ============================================================
+   Scrollbar discrète
+   ============================================================ */
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--pukri-fog); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--pukri-stone); }
+
+/* ============================================================
+   Sélection
+   ============================================================ */
+
+::selection {
+  background: var(--pukri-orange-100);
+  color: var(--pukri-marine-900);
 }

@@ -76,6 +76,27 @@ function Hero({ onCTA }) {
   );
 }
 
+function ValueStrip() {
+  const items = [
+    "Analyse CV + offre",
+    "Simulation recruteur",
+    "Coaching personnalisé",
+    "Plan d’action concret",
+  ];
+
+  return (
+    <div className="py-6 bg-white border-y border-[var(--pukri-mist)]">
+      <div className="max-w-5xl mx-auto px-4 flex flex-wrap justify-center gap-6 text-sm text-[var(--pukri-stone)]">
+        {items.map((t, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-[var(--pukri-cyan-500)] rounded-full" />
+            {t}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 function HeroMockup() {
   return (
     <div className="relative">
@@ -594,7 +615,8 @@ export default function HomeView({ onCTA }) {
     <div className="min-h-screen flex flex-col">
       <PukriHeader onCTA={onCTA} />
       <main className="flex-1">
-        <Hero onCTA={onCTA} />
+       <Hero onCTA={onCTA} />
+        <ValueStrip />
         <PourQui />
         <Modules onCTA={onCTA} />
         <CommentCaMarche />

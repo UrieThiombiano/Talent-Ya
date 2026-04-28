@@ -13,9 +13,10 @@ model User {
   passwordHash  String
   createdAt     DateTime     @default(now())
 
-  analyses      Analysis[]
-  simulations   Simulation[]
-  moduleProgress ModuleProgress[]
+  analyses         Analysis[]
+  simulations      Simulation[]
+  moduleProgress   ModuleProgress[]
+  coachingSessions CoachingSession[]
 }
 
 model Analysis {
@@ -27,7 +28,7 @@ model Analysis {
   country      String
   scoreGlobal  Int
   verdict      String
-  resultJson   Json     // tous les détails (forces, faiblesses, mots-clés, etc.)
+  resultJson   Json
 
   createdAt    DateTime @default(now())
 
@@ -42,8 +43,8 @@ model Simulation {
   poste        String
   sector       String
   score        Int
-  decision     String   // "retenu", "en_attente", "rejete"
-  feedbackJson Json     // verdict complet
+  decision     String
+  feedbackJson Json
 
   createdAt    DateTime @default(now())
 
@@ -59,4 +60,32 @@ model ModuleProgress {
   completedAt DateTime @default(now())
 
   @@unique([userId, moduleId])
+}
+
+model CoachingSession {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Contexte initial
+  cv            String
+  letter        String?
+  offer         String
+  sector        String
+  sectorName    String
+  country       String
+  prenom        String
+
+  // État + conversation
+  state         String   // "questioning" | "ready" | "finalized"
+  questions     Json     // [{q, tip, focus, a}, ...]
+  questionIndex Int      @default(0)
+
+  // Livrable final
+  deliverable   Json?
+
+  createdAt     DateTime  @default(now())
+  finalizedAt   DateTime?
+
+  @@index([userId, createdAt])
 }

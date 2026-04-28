@@ -7,10 +7,10 @@ import authRoutes from "./routes/auth.js";
 import analysisRoutes from "./routes/analysis.js";
 import simulationRoutes from "./routes/simulation.js";
 import progressRoutes from "./routes/progress.js";
+import coachingRoutes from "./routes/coaching.js";
 
 const app = express();
 
-// CORS — restreint au frontend
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
@@ -27,7 +27,6 @@ app.use(cors({
 
 app.use(express.json({ limit: "1mb" }));
 
-// Rate limiting global (100 req / 15 min / IP)
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -35,19 +34,16 @@ app.use(rateLimit({
   legacyHeaders: false,
 }));
 
-// Healthcheck (utile pour Render)
 app.get("/health", (req, res) => res.json({ ok: true, ts: Date.now() }));
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/simulation", simulationRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/coaching", coachingRoutes);
 
-// 404
 app.use((req, res) => res.status(404).json({ error: "Route introuvable" }));
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).json({

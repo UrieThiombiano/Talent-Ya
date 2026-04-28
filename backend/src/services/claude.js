@@ -14,7 +14,7 @@ const SYS_TEXT = "Tu es un expert RH et coach en recrutement spécialisé sur le
 
 export async function callClaude(prompt, jsonMode = true, maxTokens = 1500) {
   const response = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-5",
     max_tokens: maxTokens,
     system: jsonMode ? SYS_JSON : SYS_TEXT,
     messages: [{ role: "user", content: prompt }],
